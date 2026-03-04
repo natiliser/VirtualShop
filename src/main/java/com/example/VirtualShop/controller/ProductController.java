@@ -64,4 +64,20 @@ public class ProductController {
 
         return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
     }
+
+    @PatchMapping("/{id}/sell")
+    public ResponseEntity<?> sellProduct(@PathVariable Long id, @RequestParam Integer quantity) {
+        try {
+            Optional<Product> updatedProduct = productService.sellProduct(id, quantity);
+
+            if (updatedProduct.isPresent()) {
+                return new ResponseEntity<>(updatedProduct.get(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

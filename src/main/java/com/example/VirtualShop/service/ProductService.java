@@ -28,4 +28,20 @@ public class ProductService {
     public void deleteProduct(Long id) {
         repository.deleteById(id);
     }
+
+    public Optional<Product> sellProduct(Long id, Integer quantity) {
+        Optional<Product> productOpt = repository.findById(id);
+
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+
+            if (product.getStockQuantity() >= quantity) {
+                product.setStockQuantity(product.getStockQuantity() - quantity);
+                return Optional.of(repository.save(product));
+            } else {
+                throw new RuntimeException("Not enough quantity for: " + product.getName());
+            }
+        }
+        return Optional.empty();
+    }
 }
